@@ -1,0 +1,17 @@
+{
+  "name": "hangman-template",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "BROWSER=none nodemon -e js,json,css node_modules/react-template-preview/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "react-template-preview": "^1.0.31",
+    "roughjs": "^2.2.1"
+  }
+}
