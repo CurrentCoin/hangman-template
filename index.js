@@ -2,16 +2,43 @@ import React, { Component } from 'react';
 import rough from 'roughjs'
 
 import './index.css'
-import letterPaths from './MavenProBoldPaths'
+import letterPathsUpper from './MavenProBoldUpperPaths'
+import letterPathsLower from './MavenProBoldLowerPaths'
 import translatePath from './translatePath'
+
+const chooseRandom = words => {
+  const index = Math.floor(Math.random() * words.length)
+
+  return words[index]
+}
 
 class App extends Component {
   constructor(props) {
     super(props)
 
+    const { secretWords } = props
+
+    const words = secretWords.split(',').map(word => word.trim())
+
+    const secretWord = chooseRandom(words).toUpperCase()
+
     this.state = {
-      secretWord: 'HANGMAN',
+      secretWord,
       guesses: '',
+    }
+
+    if (props.theme === 'a') {
+      this.color1 = 'black'
+      this.color2 = 'rgba(0, 0, 0, 0.3)'
+    } else if (props.theme === 'b') {
+      this.color1 = 'blue'
+      this.color2 = 'rgba(255, 0, 0, 0.3)'
+    }
+
+    if (props.alphabet === 'lower') {
+      this.letterPaths = letterPathsLower
+    } else {
+      this.letterPaths = letterPathsUpper
     }
 
     this.baseX = 200
@@ -25,10 +52,13 @@ class App extends Component {
     this.dashSpacing = 10
 
     this.alphabetX = 30
-    this.alphabetY = 250
+    this.alphabetY = 280
 
     this.letterCircleRadius = 23
-    this.magicNumber = 8
+    this.circleSpacing = 5
+    this.circleOffset = 8
+
+    this.boardLetterOffset = 5
   }
 
   componentDidMount() {
@@ -81,21 +111,24 @@ class App extends Component {
   }
 
   drawClickableLetter({ letter, x, y }) {
-    const radius = this.letterCircleRadius
-    const centerOffset = radius - this.magicNumber
-    const circleNode = this.rc.circle(x + centerOffset, y + centerOffset, 2 * radius, {
-      fill: 'white',
-      stroke: 'rgba(0, 0, 0, 0.3)',
-      fillStyle: 'solid'
-    })
-
     const onClick = () => this.guess(letter)
+
+    this.drawCircle({ letter, x, y, onClick })
+    this.drawLetter({ letter, x, y, onClick })
+  }
+
+  drawCircle({ letter, x, y, onClick }) {
+    const radius = this.letterCircleRadius
+    const centerOffset = radius - this.circleOffset
+    const circleNode = this.rc.circle(x + centerOffset, y - centerOffset, 2 * radius, {
+      fill: 'white',
+      stroke: this.color2,
+      fillStyle: 'solid',
+    })
 
     circleNode.addEventListener('click', onClick)
 
     this.svg.appendChild(circleNode)
-
-    this.drawLetter({ letter, x, y, onClick })
   }
 
   guess(letter) {
@@ -168,10 +201,41 @@ class App extends Component {
         break;
       case 6:
         this.drawRightLeg()
+        if (this.props.guesses === '6')
+          this.lose()
+        break;
+      case 7:
+        this.drawLeftEye()
+        break;
+      case 8:
+        this.drawRightEye()
         this.lose()
         break;
       default:
     }
+  }
+
+  drawLeftEye() {
+    this.drawEye('left')
+  }
+
+  drawRightEye() {
+    this.drawEye('right')
+  }
+
+  drawEye(side) {
+    const { rc, svg } = this
+    const height = this.baseHeight
+    const x = side === 'left'
+      ? this.baseX - (height / 32)
+      : this.baseX + (height / 32)
+
+    const y = this.baseY + (height * 5 / 16)
+    const diameter = height / 128
+
+    const circle = rc.circle(x, y, diameter)
+
+    svg.appendChild(circle)
   }
 
   drawHead() {
@@ -244,7 +308,7 @@ class App extends Component {
   }
 
   crossOutLetter(letter) {
-    const waveLength = this.letterCircleRadius * 2 + 5
+    const waveLength = this.letterCircleRadius * 2 + this.circleSpacing
 
     const index = letter.charCodeAt(0) - 65
 
@@ -257,15 +321,15 @@ class App extends Component {
   drawX({ x, y }) {
     const { rc, svg } = this
     const diameter = this.letterCircleRadius * 2
-    const centerOffset = this.magicNumber
+    const centerOffset = this.circleOffset
 
     x -= centerOffset
-    y -= centerOffset
+    y += centerOffset
 
-    const line1 = rc.line(x, y, x + diameter, y + diameter, {
+    const line1 = rc.line(x, y, x + diameter, y - diameter, {
       strokeWidth: 1,
     })
-    const line2 = rc.line(x, y + diameter, x + diameter, y, {
+    const line2 = rc.line(x, y - diameter, x + diameter, y, {
       strokeWidth: 1,
     })
 
@@ -284,7 +348,7 @@ class App extends Component {
   drawBoardLetter(index) {
     const width = this.dashWidth
     const space = this.dashSpacing
-    const y = this.dashY
+    const y = this.dashY - this.boardLetterOffset
     const x = index * (width + space) + this.dashX
 
     this.drawLetter({
@@ -295,16 +359,7 @@ class App extends Component {
   }
 
   drawLetter({ letter, x, y, onClick }) {
-    const path = letterPaths[letter]
-
-    // temp until fonts are proerly fixed
-    if (onClick) {
-      x += 28
-      y += 28
-    } else {
-      x += 28
-      y -= 5
-    }
+    const path = this.letterPaths[letter]
 
     const newPath = translatePath({
       path,
@@ -313,7 +368,8 @@ class App extends Component {
     })
 
     const letterNode = this.rc.path(newPath, {
-      simplification: 3
+      simplification: 3,
+      stroke: this.color1,
     })
 
     if (onClick) {
@@ -324,7 +380,7 @@ class App extends Component {
   }
 
   drawAlphabet() {
-    const waveLength = this.letterCircleRadius * 2 + 5
+    const waveLength = this.letterCircleRadius * 2 + this.circleSpacing
 
     for (let index = 0; index < 26; index++) {
       this.drawClickableLetter({

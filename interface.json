@@ -1,1 +1,21 @@
-{}
+{
+  "secretWords": {
+    "type": "string",
+    "default": "hangman, apple, watermelon, balloon"
+  },
+  "theme": {
+    "type": "enum",
+    "values": ["a", "b"],
+    "default": "a"
+  },
+  "guesses": {
+    "type": "enum",
+    "values": ["6", "8"],
+    "default": "6"
+  },
+  "alphabet": {
+    "type": "enum",
+    "values": ["upper", "lower"],
+    "default": "upper"
+  }
+}
