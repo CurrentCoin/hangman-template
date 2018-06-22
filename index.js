@@ -13,19 +13,18 @@ const chooseRandom = words => {
 }
 
 class App extends Component {
-  constructor(props) {
-    super(props)
+  state = {
+    guesses: '',
+  }
+
+  initialize() {
+    const { props } = this
 
     const { secretWords } = props
 
     const words = secretWords.split(',').map(word => word.trim())
 
-    const secretWord = chooseRandom(words).toUpperCase()
-
-    this.state = {
-      secretWord,
-      guesses: '',
-    }
+    this.secretWord = chooseRandom(words).toUpperCase()
 
     if (props.theme === 'a') {
       this.color1 = 'black'
@@ -40,6 +39,8 @@ class App extends Component {
     } else {
       this.letterPaths = letterPathsUpper
     }
+
+    this.rc = rough.svg(this.svg)
 
     this.baseX = 200
     this.baseY = 20
@@ -59,18 +60,40 @@ class App extends Component {
     this.circleOffset = 8
 
     this.boardLetterOffset = 5
-  }
 
-  componentDidMount() {
-    this.rc = rough.svg(this.svg)
-
-    this.initialize()
-  }
-
-  initialize() {
     this.drawDashes()
     this.drawBase()
     this.drawAlphabet()
+  }
+
+  componentDidMount() {
+    this.initialize()
+  }
+
+  componentWillReceiveProps() {
+    this.receivedNewProps = true
+  }
+
+  componentDidUpdate() {
+    if (this.receivedNewProps) {
+      this.reinitialize()
+    }
+
+    this.receivedNewProps = false
+  }
+
+  reinitialize() {
+    const { svg } = this
+
+    while(svg.firstChild) {
+      svg.removeChild(svg.firstChild)
+    }
+
+    this.setState({
+      guesses: ''
+    })
+
+    this.initialize()
   }
 
   drawDash(index) {
@@ -85,7 +108,7 @@ class App extends Component {
   }
 
   drawDashes() {
-    Array.from(this.state.secretWord).forEach((letter, index) => {
+    Array.from(this.secretWord).forEach((letter, index) => {
       this.drawDash(index)
     })
   }
@@ -139,7 +162,7 @@ class App extends Component {
 
       this.crossOutLetter(letter)
 
-      if (this.state.secretWord.includes(letter)) {
+      if (this.secretWord.includes(letter)) {
         this.fillInLetter(letter)
         this.checkWin()
       } else {
@@ -150,7 +173,7 @@ class App extends Component {
 
   checkWin() {
     if (
-      Array.from(this.state.secretWord).every(letter => {
+      Array.from(this.secretWord).every(letter => {
         return this.state.guesses.includes(letter)
       })
     ) {
@@ -178,7 +201,7 @@ class App extends Component {
     let incorrectGuesses = 0
 
     Array.from(this.state.guesses).forEach(letter => {
-      if (!this.state.secretWord.includes(letter)) {
+      if (!this.secretWord.includes(letter)) {
         incorrectGuesses++
       }
     })
@@ -338,7 +361,7 @@ class App extends Component {
   }
 
   fillInLetter(guessedLetter) {
-    Array.from(this.state.secretWord).forEach((letter, index) => {
+    Array.from(this.secretWord).forEach((letter, index) => {
       if (letter === guessedLetter) {
         this.drawBoardLetter(index)
       }
@@ -352,7 +375,7 @@ class App extends Component {
     const x = index * (width + space) + this.dashX
 
     this.drawLetter({
-      letter: this.state.secretWord[index],
+      letter: this.secretWord[index],
       x,
       y,
     })
