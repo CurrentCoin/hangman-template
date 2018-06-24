@@ -5,6 +5,7 @@ import './index.css'
 import letterPathsUpper from './MavenProBoldUpperPaths'
 import letterPathsLower from './MavenProBoldLowerPaths'
 import translatePath from './translatePath'
+import Progress from './Progress'
 
 const chooseRandom = words => {
   const index = Math.floor(Math.random() * words.length)
@@ -511,8 +512,17 @@ class App extends Component {
   }
 
   render() {
+    let incorrectGuesses = 0
+
+    Array.from(this.state.guesses).forEach(letter => {
+      if (!this.secretWord.includes(letter)) {
+        incorrectGuesses++
+      }
+    })
+
     return ([
       <div key='1' className='Hangman-wrapper'>
+        <Progress {...{ incorrectGuesses }} />
         <svg
           className='Hangman-svg'
           ref={ref => this.svg = ref}

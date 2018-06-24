@@ -34,3 +34,8 @@
 .Hangman-hidden {
   display: none;
 }
+
+.Hangman-Progress-svg {
+  width: 150px;
+  height: 150px;
+}
