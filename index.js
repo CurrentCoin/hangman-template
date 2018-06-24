@@ -12,6 +12,12 @@ const chooseRandom = words => {
   return words[index]
 }
 
+const clearNode = node => {
+  while(node.firstChild) {
+    node.removeChild(node.firstChild)
+  }
+}
+
 class App extends Component {
   state = {
     guesses: '',
@@ -61,6 +67,8 @@ class App extends Component {
 
     this.boardLetterOffset = 5
 
+    this.textLetterSpacing = 25
+
     this.drawDashes()
     this.drawBase()
     this.drawAlphabet()
@@ -83,11 +91,7 @@ class App extends Component {
   }
 
   reinitialize() {
-    const { svg } = this
-
-    while(svg.firstChild) {
-      svg.removeChild(svg.firstChild)
-    }
+    clearNode(this.svg)
 
     this.setState({
       guesses: ''
@@ -190,11 +194,95 @@ class App extends Component {
   }
 
   end(condition) {
-    if (condition === 'win') {
-      setTimeout(() => alert('You Win!'), 1000)
-    } else {
-      setTimeout(() => alert('you lose...'), 1000)
+    const text = condition === 'win'
+      ? 'You guessed it!'
+      : 'You ran out of guesses'
+
+    const buttonText = 'Play again'
+    const onClick = this.reinitialize.bind(this)
+
+    setTimeout(() => this.prompt({
+      text,
+      buttonText,
+      onClick,
+    }), 500)
+  }
+
+  prompt({
+    text,
+    buttonText,
+    onClick,
+  }) {
+    this.gameOverWrapper.classList.remove('Hangman-hidden')
+
+    const svg = this.gameOverSvg
+
+    const buttonClick = () => {
+      this.gameOverWrapper.classList.add('Hangman-hidden')
+      clearNode(svg)
+      onClick()
     }
+
+    this.drawText({
+      text,
+      x: 50,
+      y: 50,
+      svg,
+    })
+
+    this.drawButton({
+      text: buttonText,
+      x: 100,
+      y: 150,
+      onClick: buttonClick,
+      svg,
+    })
+  }
+
+  drawText({
+    text,
+    x,
+    y,
+    onClick,
+    svg,
+  }) {
+    Array.from(text).forEach((letter, index) => {
+      const space = this.textLetterSpacing
+      const letterX = index * space + x
+
+      this.drawLetter({
+        letter,
+        x: letterX,
+        y,
+        onClick,
+        svg,
+      })
+    })
+  }
+
+  drawButton({
+    text,
+    x,
+    y,
+    onClick,
+    svg,
+  }) {
+    const cs = getComputedStyle(svg)
+
+    console.log('cs:', cs)
+
+    const { rc } = this
+    const width = 50
+    const height = 20
+
+    const rectangle = rc.rectangle(x, y, width, height, {
+      fill: 'white',
+      fillStyle: 'solid',
+    })
+
+    rectangle.addEventListener('click', onClick)
+
+    svg.appendChild(rectangle)
   }
 
   drawPerson() {
@@ -381,8 +469,16 @@ class App extends Component {
     })
   }
 
-  drawLetter({ letter, x, y, onClick }) {
-    const path = this.letterPaths[letter]
+  drawLetter({
+    letter,
+    x,
+    y,
+    onClick,
+    svg,
+  }) {
+    svg = svg || this.svg
+
+    const path = this.letterPaths[letter.toUpperCase()]
 
     const newPath = translatePath({
       path,
@@ -399,7 +495,7 @@ class App extends Component {
       letterNode.addEventListener('click', onClick)
     }
 
-    this.svg.appendChild(letterNode)
+    svg.appendChild(letterNode)
   }
 
   drawAlphabet() {
@@ -415,13 +511,26 @@ class App extends Component {
   }
 
   render() {
-    return (
-      <svg
-        className='Hangman-svg'
-        ref={ref => this.svg = ref}
+    return ([
+      <div key='1' className='Hangman-wrapper'>
+        <svg
+          className='Hangman-svg'
+          ref={ref => this.svg = ref}
+        >
+        </svg>
+      </div>,
+      <div
+        key='2'
+        className='Hangman-game-over-wrapper Hangman-hidden'
+        ref={ref => this.gameOverWrapper = ref}
       >
-      </svg>
-    )
+        <svg
+          className='Hangman-game-over-svg'
+          ref={ref => this.gameOverSvg = ref}
+        >
+        </svg>
+      </div>
+    ])
   }
 }
 
