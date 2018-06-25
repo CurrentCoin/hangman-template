@@ -7,7 +7,6 @@ const clearNode = node => {
   }
 }
 
-// this component is not 100% stateless
 export default class Progress extends Component {
   componentDidMount() {
     this.rc = rough.svg(this.svg)

@@ -6,6 +6,7 @@ import letterPathsUpper from './MavenProBoldUpperPaths'
 import letterPathsLower from './MavenProBoldLowerPaths'
 import translatePath from './translatePath'
 import Progress from './Progress'
+import Word from './Word'
 
 const chooseRandom = words => {
   const index = Math.floor(Math.random() * words.length)
@@ -20,11 +21,17 @@ const clearNode = node => {
 }
 
 class App extends Component {
-  state = {
-    guesses: '',
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      guesses: '',
+    }
+
+    this.initializeProperties()
   }
 
-  initialize() {
+  initializeProperties() {
     const { props } = this
 
     const { secretWords } = props
@@ -46,6 +53,10 @@ class App extends Component {
     } else {
       this.letterPaths = letterPathsUpper
     }
+  }
+
+  initialize() {
+    this.initializeProperties()
 
     this.rc = rough.svg(this.svg)
 
@@ -268,10 +279,6 @@ class App extends Component {
     onClick,
     svg,
   }) {
-    const cs = getComputedStyle(svg)
-
-    console.log('cs:', cs)
-
     const { rc } = this
     const width = 50
     const height = 20
@@ -520,9 +527,16 @@ class App extends Component {
       }
     })
 
+    const word = Array.from(this.secretWord).map(letter => {
+      return this.state.guesses.includes(letter)
+        ? letter
+        : '-'
+    }).join()
+
     return ([
       <div key='1' className='Hangman-wrapper'>
-        <Progress {...{ incorrectGuesses }} />
+        <Progress incorrectGuesses={incorrectGuesses} />
+        <Word word={word} />
         <svg
           className='Hangman-svg'
           ref={ref => this.svg = ref}
