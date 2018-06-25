@@ -7,6 +7,7 @@ import letterPathsLower from './MavenProBoldLowerPaths'
 import translatePath from './translatePath'
 import Progress from './Progress'
 import Word from './Word'
+import Alphabet from './Alphabet'
 
 const chooseRandom = words => {
   const index = Math.floor(Math.random() * words.length)
@@ -518,6 +519,14 @@ class App extends Component {
     }
   }
 
+  onGuess(letter) {
+    if (!this.state.guesses.includes(letter)) {
+      this.setState({
+        guesses: this.state.guesses.concat(letter)
+      })
+    }
+  }
+
   render() {
     let incorrectGuesses = 0
 
@@ -537,6 +546,10 @@ class App extends Component {
       <div key='1' className='Hangman-wrapper'>
         <Progress incorrectGuesses={incorrectGuesses} />
         <Word word={word} />
+        <Alphabet
+          onGuess={this.onGuess.bind(this)}
+          guesses={this.state.guesses}
+        />
         <svg
           className='Hangman-svg'
           ref={ref => this.svg = ref}

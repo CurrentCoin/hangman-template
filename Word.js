@@ -68,6 +68,11 @@ export default class Word extends Component {
 
     if (mustBeReset(previousWord, currentWord)) {
       clearNode(this.svg)
+
+      this.svg.style.width =
+        this.props.word.length * (this.dashWidth + this.dashSpacing)
+        + (2 * this.padding)
+
       this.drawDashes()
       previousWord = '-'.repeat(currentWord.length)
     }
