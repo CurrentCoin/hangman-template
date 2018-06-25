@@ -19,45 +19,57 @@ export default class Progress extends Component {
     this.height = Number(style.height.slice(0, -2))
     this.width = Number(style.width.slice(0, -2))
 
-    this.drawBase()
-  }
-
-  reset() {
-    clearNode(this.svg)
-    this.drawBase()
+    this.renderSvg()
   }
 
   componentDidUpdate() {
-    switch (this.props.incorrectGuesses) {
+    this.renderSvg()
+  }
+
+  renderSvg() {
+    const currentStage = this.props.incorrectGuesses
+    let previousStage = this.previousStage
+
+    if (currentStage === previousStage) {
+      return
+    } else if (currentStage < previousStage) {
+      clearNode(this.svg)
+      previousStage = undefined
+    }
+
+    /* eslint-disable no-fallthrough */
+    switch (previousStage) {
+      case undefined:
+        this.drawBase()
+        if (currentStage === 0) break
       case 0:
-        this.reset()
-        break
-      case 1:
         this.drawHead()
-        break
-      case 2:
+        if (currentStage === 1) break
+      case 1:
         this.drawTorso()
-        break
-      case 3:
+        if (currentStage === 2) break
+      case 2:
         this.drawLeftArm()
-        break
-      case 4:
+        if (currentStage === 3) break
+      case 3:
         this.drawRightArm()
-        break
-      case 5:
+        if (currentStage === 4) break
+      case 4:
         this.drawLeftLeg()
-        break
-      case 6:
+        if (currentStage === 5) break
+      case 5:
         this.drawRightLeg()
-        break
-      case 7:
+        if (currentStage === 6) break
+      case 6:
         this.drawLeftEye()
-        break
-      case 8:
+        if (currentStage === 7) break
+      case 7:
         this.drawRightEye()
-        break
+        if (currentStage === 8) break
       default:
     }
+
+    this.previousStage = currentStage
   }
 
   drawBase() {
@@ -94,7 +106,6 @@ export default class Progress extends Component {
 
   drawTorso() {
     const { rc, svg } = this
-    const width = this.width - (this.padding * 2)
     const height = this.height - (this.padding * 2)
     const x0 = this.padding
     const y0 = this.padding + (height * 3 / 8)
@@ -160,7 +171,6 @@ export default class Progress extends Component {
 
   drawEye(side) {
     const { rc, svg } = this
-    const width = this.width - (this.padding * 2)
     const height = this.height - (this.padding * 2)
     const y0 = this.padding + (height * 5 / 16)
     const x0 = side === 'left'
