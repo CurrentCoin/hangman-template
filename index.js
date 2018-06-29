@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import rough from 'roughjs'
+// import rough from 'roughjs'
 
 import './index.css'
 import letterPathsUpper from './MavenProBoldUpperPaths'
@@ -8,6 +8,7 @@ import translatePath from './translatePath'
 import Progress from './Progress'
 import Word from './Word'
 import Alphabet from './Alphabet'
+import Prompt from './Prompt'
 
 const chooseRandom = words => {
   const index = Math.floor(Math.random() * words.length)
@@ -15,21 +16,19 @@ const chooseRandom = words => {
   return words[index]
 }
 
-const clearNode = node => {
-  while(node.firstChild) {
-    node.removeChild(node.firstChild)
-  }
-}
-
 class App extends Component {
   constructor(props) {
     super(props)
+    const { secretWords } = props
+    const words = secretWords.split(',').map(word => word.trim())
+    const secretWord = chooseRandom(words).toUpperCase()
 
     this.state = {
       guesses: '',
+      secretWord,
     }
 
-    this.initializeProperties()
+    // this.initializeProperties()
   }
 
   initializeProperties() {
@@ -39,56 +38,33 @@ class App extends Component {
 
     const words = secretWords.split(',').map(word => word.trim())
 
-    this.secretWord = chooseRandom(words).toUpperCase()
+    const secretWord = chooseRandom(words).toUpperCase()
 
-    if (props.theme === 'a') {
-      this.color1 = 'black'
-      this.color2 = 'rgba(0, 0, 0, 0.3)'
-    } else if (props.theme === 'b') {
-      this.color1 = 'blue'
-      this.color2 = 'rgba(255, 0, 0, 0.3)'
-    }
+    this.setState({
+      secretWord
+    })
 
-    if (props.alphabet === 'lower') {
-      this.letterPaths = letterPathsLower
-    } else {
-      this.letterPaths = letterPathsUpper
-    }
+    // if (props.theme === 'a') {
+    //   this.color1 = 'black'
+    //   this.color2 = 'rgba(0, 0, 0, 0.3)'
+    // } else if (props.theme === 'b') {
+    //   this.color1 = 'blue'
+    //   this.color2 = 'rgba(255, 0, 0, 0.3)'
+    // }
+    //
+    // if (props.alphabet === 'lower') {
+    //   this.letterPaths = letterPathsLower
+    // } else {
+    //   this.letterPaths = letterPathsUpper
+    // }
   }
 
   initialize() {
     this.initializeProperties()
-
-    this.rc = rough.svg(this.svg)
-
-    this.baseX = 200
-    this.baseY = 20
-    this.baseWidth = 100
-    this.baseHeight = 100
-
-    this.dashX = 100
-    this.dashY = 200
-    this.dashWidth = 30
-    this.dashSpacing = 10
-
-    this.alphabetX = 30
-    this.alphabetY = 280
-
-    this.letterCircleRadius = 23
-    this.circleSpacing = 5
-    this.circleOffset = 8
-
-    this.boardLetterOffset = 5
-
-    this.textLetterSpacing = 25
-
-    this.drawDashes()
-    this.drawBase()
-    this.drawAlphabet()
   }
 
   componentDidMount() {
-    this.initialize()
+    // this.initialize()
   }
 
   componentWillReceiveProps() {
@@ -97,14 +73,13 @@ class App extends Component {
 
   componentDidUpdate() {
     if (this.receivedNewProps) {
-      this.reinitialize()
+      // this.reinitialize()
     }
 
     this.receivedNewProps = false
   }
 
-  reinitialize() {
-    clearNode(this.svg)
+  reinitialize = () => {
 
     this.setState({
       guesses: ''
@@ -113,461 +88,93 @@ class App extends Component {
     this.initialize()
   }
 
-  drawDash(index) {
-    const width = this.dashWidth
-    const space = this.dashSpacing
-    const y = this.dashY
-    const x = index * (width + space) + this.dashX
-
-    const node = this.rc.line(x, y, x + width, y)
-
-    this.svg.appendChild(node)
-  }
-
-  drawDashes() {
-    Array.from(this.secretWord).forEach((letter, index) => {
-      this.drawDash(index)
-    })
-  }
-
-  drawBase() {
-    const { rc, svg } = this
-    const x = this.baseX
-    const y = this.baseY
-    const width = this.baseWidth
-    const height = this.baseHeight
-
-    const centerX = x + (width / 2)
-
-    const bottomLine = rc.line(x, y + height, x + width, y + height)
-    const centerLine = rc.line(centerX, y, centerX, y + height)
-    const topLine = rc.line(x, y, centerX, y)
-    const leftLine = rc.line(x, y, x, y + (height / 4))
-
-    svg.appendChild(bottomLine)
-    svg.appendChild(centerLine)
-    svg.appendChild(topLine)
-    svg.appendChild(leftLine)
-  }
-
-  drawClickableLetter({ letter, x, y }) {
-    const onClick = () => this.guess(letter)
-
-    this.drawCircle({ letter, x, y, onClick })
-    this.drawLetter({ letter, x, y, onClick })
-  }
-
-  drawCircle({ letter, x, y, onClick }) {
-    const radius = this.letterCircleRadius
-    const centerOffset = radius - this.circleOffset
-    const circleNode = this.rc.circle(x + centerOffset, y - centerOffset, 2 * radius, {
-      fill: 'white',
-      stroke: this.color2,
-      fillStyle: 'solid',
-    })
-
-    circleNode.addEventListener('click', onClick)
-
-    this.svg.appendChild(circleNode)
-  }
-
-  guess(letter) {
+  onGuess = (letter) => {
     if (!this.state.guesses.includes(letter)) {
-      this.setState({
-        guesses: this.state.guesses.concat(letter)
-      })
-
-      this.crossOutLetter(letter)
-
-      if (this.secretWord.includes(letter)) {
-        this.fillInLetter(letter)
-        this.checkWin()
-      } else {
-        this.drawPerson()
-      }
+      this.setState(previousState => ({
+        guesses: previousState.guesses.concat(letter)
+      }))
     }
   }
 
-  checkWin() {
-    if (
-      Array.from(this.secretWord).every(letter => {
-        return this.state.guesses.includes(letter)
-      })
-    ) {
-      this.win()
+  isGameOver() {
+    if (this.state.guesses.length >= this.props.guesses) {
+      return true
+    } else {
+      return false
     }
   }
 
-  win() {
-    this.end('win')
-  }
+  GameOverPrompt = localProps => {
+    const { numberOfIncorrectGuessesAllowed } = this.props
 
-  lose() {
-    this.end('lose')
-  }
-
-  end(condition) {
-    const text = condition === 'win'
-      ? 'You guessed it!'
-      : 'You ran out of guesses'
-
-    const buttonText = 'Play again'
-    const onClick = this.reinitialize.bind(this)
-
-    setTimeout(() => this.prompt({
-      text,
-      buttonText,
-      onClick,
-    }), 500)
-  }
-
-  prompt({
-    text,
-    buttonText,
-    onClick,
-  }) {
-    this.gameOverWrapper.classList.remove('Hangman-hidden')
-
-    const svg = this.gameOverSvg
-
-    const buttonClick = () => {
-      this.gameOverWrapper.classList.add('Hangman-hidden')
-      clearNode(svg)
-      onClick()
+    if (this.hasGuessedWord()) {
+      return (
+        <div className='Hangman-Prompt-wrapper'>
+          <Prompt
+            text='You guessed it!'
+            buttonText='Play Again'
+            buttonClick={this.reinitialize}
+          />
+        </div>
+      )
+    } else if (this.incorrectGuesses() >= numberOfIncorrectGuessesAllowed) {
+      return (
+        <div className='Hangman-Prompt-wrapper'>
+          <Prompt
+            text='You ran out of guesses'
+            buttonText='Play Again'
+            buttonClick={this.reinitialize}
+          />
+        </div>
+      )
+    } else {
+      return null
     }
+  }
 
-    this.drawText({
-      text,
-      x: 50,
-      y: 50,
-      svg,
-    })
+  hasGuessedWord = () => {
+    const { guesses, secretWord } = this.state
 
-    this.drawButton({
-      text: buttonText,
-      x: 100,
-      y: 150,
-      onClick: buttonClick,
-      svg,
+    return Array.from(secretWord).every(letter => {
+      return guesses.includes(letter)
     })
   }
 
-  drawText({
-    text,
-    x,
-    y,
-    onClick,
-    svg,
-  }) {
-    Array.from(text).forEach((letter, index) => {
-      const space = this.textLetterSpacing
-      const letterX = index * space + x
-
-      this.drawLetter({
-        letter,
-        x: letterX,
-        y,
-        onClick,
-        svg,
-      })
-    })
-  }
-
-  drawButton({
-    text,
-    x,
-    y,
-    onClick,
-    svg,
-  }) {
-    const { rc } = this
-    const width = 50
-    const height = 20
-
-    const rectangle = rc.rectangle(x, y, width, height, {
-      fill: 'white',
-      fillStyle: 'solid',
-    })
-
-    rectangle.addEventListener('click', onClick)
-
-    svg.appendChild(rectangle)
-  }
-
-  drawPerson() {
-    let incorrectGuesses = 0
+  incorrectGuesses = () => {
+    const { secretWord } = this.state
+    let count = 0
 
     Array.from(this.state.guesses).forEach(letter => {
-      if (!this.secretWord.includes(letter)) {
-        incorrectGuesses++
+      if (!secretWord.includes(letter)) {
+        count++
       }
     })
 
-    switch (incorrectGuesses) {
-      case 1:
-        this.drawHead()
-        break;
-      case 2:
-        this.drawTorso()
-        break;
-      case 3:
-        this.drawLeftArm()
-        break;
-      case 4:
-        this.drawRightArm()
-        break;
-      case 5:
-        this.drawLeftLeg()
-        break;
-      case 6:
-        this.drawRightLeg()
-        if (this.props.guesses === '6')
-          this.lose()
-        break;
-      case 7:
-        this.drawLeftEye()
-        break;
-      case 8:
-        this.drawRightEye()
-        this.lose()
-        break;
-      default:
-    }
-  }
-
-  drawLeftEye() {
-    this.drawEye('left')
-  }
-
-  drawRightEye() {
-    this.drawEye('right')
-  }
-
-  drawEye(side) {
-    const { rc, svg } = this
-    const height = this.baseHeight
-    const x = side === 'left'
-      ? this.baseX - (height / 32)
-      : this.baseX + (height / 32)
-
-    const y = this.baseY + (height * 5 / 16)
-    const diameter = height / 128
-
-    const circle = rc.circle(x, y, diameter)
-
-    svg.appendChild(circle)
-  }
-
-  drawHead() {
-    const { rc, svg } = this
-    const x = this.baseX
-    const y = this.baseY
-    const height = this.baseHeight
-    const radius = height / 16
-
-    const circle = rc.circle(x, y + (height / 4) + radius, radius * 2)
-
-    svg.appendChild(circle)
-  }
-
-  drawTorso() {
-    const { rc, svg } = this
-    const height = this.baseHeight
-    const x = this.baseX
-    const y = this.baseY + (height * 3 / 8)
-    const torsoLength = height / 4
-
-    const line = rc.line(x, y, x, y + torsoLength)
-
-    svg.appendChild(line)
-  }
-
-  drawLeftArm() {
-    this.drawArm('left')
-  }
-
-  drawRightArm() {
-    this.drawArm('right')
-  }
-
-  drawArm(side) {
-    const { rc, svg } = this
-    const width = this.baseWidth
-    const height = this.baseHeight
-    const x = this.baseX
-    const y = this.baseY + (height / 2)
-    const armLength = width / 8
-    const armEndX = side === 'left' ? x - armLength : x + armLength
-
-    const arm = rc.line(x, y, armEndX, y)
-
-    svg.appendChild(arm)
-  }
-
-  drawLeftLeg() {
-    this.drawLeg('left')
-  }
-
-  drawRightLeg() {
-    this.drawLeg('right')
-  }
-
-  drawLeg(side) {
-    const { rc, svg } = this
-    const width = this.baseWidth
-    const height = this.baseHeight
-    const x = this.baseX
-    const y = this.baseY + (height * 5 / 8)
-    const armLength = width / 8
-    const legEndX = side === 'left' ? x - armLength : x + armLength
-    const legEndY = y + armLength
-
-    const leg = rc.line(x, y, legEndX, legEndY)
-
-    svg.appendChild(leg)
-  }
-
-  crossOutLetter(letter) {
-    const waveLength = this.letterCircleRadius * 2 + this.circleSpacing
-
-    const index = letter.charCodeAt(0) - 65
-
-    this.drawX({
-      x: (index % 9) * waveLength + this.alphabetX,
-      y: Math.floor(index / 9) * waveLength + this.alphabetY,
-    })
-  }
-
-  drawX({ x, y }) {
-    const { rc, svg } = this
-    const diameter = this.letterCircleRadius * 2
-    const centerOffset = this.circleOffset
-
-    x -= centerOffset
-    y += centerOffset
-
-    const line1 = rc.line(x, y, x + diameter, y - diameter, {
-      strokeWidth: 1,
-    })
-    const line2 = rc.line(x, y - diameter, x + diameter, y, {
-      strokeWidth: 1,
-    })
-
-    svg.appendChild(line1)
-    svg.appendChild(line2)
-  }
-
-  fillInLetter(guessedLetter) {
-    Array.from(this.secretWord).forEach((letter, index) => {
-      if (letter === guessedLetter) {
-        this.drawBoardLetter(index)
-      }
-    })
-  }
-
-  drawBoardLetter(index) {
-    const width = this.dashWidth
-    const space = this.dashSpacing
-    const y = this.dashY - this.boardLetterOffset
-    const x = index * (width + space) + this.dashX
-
-    this.drawLetter({
-      letter: this.secretWord[index],
-      x,
-      y,
-    })
-  }
-
-  drawLetter({
-    letter,
-    x,
-    y,
-    onClick,
-    svg,
-  }) {
-    svg = svg || this.svg
-
-    const path = this.letterPaths[letter.toUpperCase()]
-
-    const newPath = translatePath({
-      path,
-      x: x || 0,
-      y: y || 0,
-    })
-
-    const letterNode = this.rc.path(newPath, {
-      simplification: 3,
-      stroke: this.color1,
-    })
-
-    if (onClick) {
-      letterNode.addEventListener('click', onClick)
-    }
-
-    svg.appendChild(letterNode)
-  }
-
-  drawAlphabet() {
-    const waveLength = this.letterCircleRadius * 2 + this.circleSpacing
-
-    for (let index = 0; index < 26; index++) {
-      this.drawClickableLetter({
-        letter: String.fromCharCode(index + 65),
-        x: (index % 9) * waveLength + this.alphabetX,
-        y: Math.floor(index / 9) * waveLength + this.alphabetY,
-      })
-    }
-  }
-
-  onGuess(letter) {
-    if (!this.state.guesses.includes(letter)) {
-      this.setState({
-        guesses: this.state.guesses.concat(letter)
-      })
-    }
+    return count
   }
 
   render() {
-    let incorrectGuesses = 0
+    const { secretWord } = this.state
 
-    Array.from(this.state.guesses).forEach(letter => {
-      if (!this.secretWord.includes(letter)) {
-        incorrectGuesses++
-      }
-    })
-
-    const word = Array.from(this.secretWord).map(letter => {
+    const word = Array.from(secretWord).map(letter => {
       return this.state.guesses.includes(letter)
         ? letter
         : '-'
-    }).join()
+    }).join('')
 
-    return ([
-      <div key='1' className='Hangman-wrapper'>
-        <Progress incorrectGuesses={incorrectGuesses} />
+    const { GameOverPrompt } = this
+
+    return (
+      <div className='Hangman-wrapper'>
+        <Progress incorrectGuesses={this.incorrectGuesses()} />
         <Word word={word} />
         <Alphabet
-          onGuess={this.onGuess.bind(this)}
+          onGuess={this.onGuess}
           guesses={this.state.guesses}
         />
-        <svg
-          className='Hangman-svg'
-          ref={ref => this.svg = ref}
-        >
-        </svg>
-      </div>,
-      <div
-        key='2'
-        className='Hangman-game-over-wrapper Hangman-hidden'
-        ref={ref => this.gameOverWrapper = ref}
-      >
-        <svg
-          className='Hangman-game-over-svg'
-          ref={ref => this.gameOverSvg = ref}
-        >
-        </svg>
+        <GameOverPrompt />
       </div>
-    ])
+    )
   }
 }
 

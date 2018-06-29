@@ -20,6 +20,8 @@ export default class Alphabet extends Component {
     this.circleSpacing = 5
     this.circleOffset = 8
 
+    this.globalFontOffsetY = 25
+
     this.renderSvg()
   }
 
@@ -61,7 +63,7 @@ export default class Alphabet extends Component {
     const index = letter.charCodeAt(0) - 65
 
     const x = (index % 9) * waveLength + padding - circleOffset
-    const y = Math.floor(index / 9) * waveLength + padding + circleOffset
+    const y = Math.floor(index / 9) * waveLength + padding + circleOffset + this.globalFontOffsetY
 
     const line1 = this.rc.line(x, y, x + diameter, y - diameter, {
       strokeWidth: 1,
@@ -81,7 +83,7 @@ export default class Alphabet extends Component {
       this.drawCircleLetter({
         letter: String.fromCharCode(index + 65),
         x: (index % 9) * waveLength + this.padding,
-        y: Math.floor(index / 9) * waveLength + this.padding,
+        y: Math.floor(index / 9) * waveLength + this.padding + this.globalFontOffsetY,
       })
     }
   }
@@ -106,7 +108,6 @@ export default class Alphabet extends Component {
 
     this.svg.appendChild(circleNode)
   }
-
 
   drawLetter({
     letter,

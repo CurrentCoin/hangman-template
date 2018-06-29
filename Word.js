@@ -67,6 +67,7 @@ export default class Word extends Component {
       return
 
     if (mustBeReset(previousWord, currentWord)) {
+
       clearNode(this.svg)
 
       this.svg.style.width =
