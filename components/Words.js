@@ -6,7 +6,7 @@ import Word from './Word'
 export default class Words extends PureComponent {
   static propTypes = {
     text: PropTypes.string,
-    theme: PropTypes.object,
+    theme: PropTypes.string,
   }
 
   static defaultProps = {

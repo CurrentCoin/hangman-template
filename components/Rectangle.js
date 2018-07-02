@@ -8,7 +8,7 @@ import themes from '../themes'
 export default class Rectangle extends PureComponent {
   static propTypes = {
     children: PropTypes.element,
-    theme: PropTypes.object,
+    theme: PropTypes.string,
   }
 
   static defaultProps = {
@@ -20,7 +20,7 @@ export default class Rectangle extends PureComponent {
         }}
       ></div>
     ),
-    theme: themes['a'],
+    theme: 'a',
   }
 
   componentDidMount() {
@@ -40,10 +40,8 @@ export default class Rectangle extends PureComponent {
     } = this.childWrapper
 
     const {
-      theme: {
-        lineColor
-      }
-    } = this.props
+      lineColor
+    } = themes[this.props.theme]
 
     const rectangleNode = this.rc.rectangle(0, 0, width, height, {
       stroke: lineColor,

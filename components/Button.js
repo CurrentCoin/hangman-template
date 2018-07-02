@@ -8,7 +8,7 @@ export default class Button extends PureComponent {
   static propTypes = {
     text: PropTypes.string,
     onClick: PropTypes.func,
-    theme: PropTypes.object,
+    theme: PropTypes.string,
   }
 
   static defaultProps = {

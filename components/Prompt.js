@@ -11,14 +11,14 @@ export default class Prompt extends PureComponent {
     text: PropTypes.string,
     buttonText: PropTypes.string,
     onClick: PropTypes.func,
-    theme: PropTypes.object,
+    theme: PropTypes.string,
   }
 
   static defaultProps = {
     display: true,
     text: '',
     buttonText: 'click',
-    theme: themes['a'],
+    theme: 'a',
   }
 
   render() {
@@ -32,7 +32,7 @@ export default class Prompt extends PureComponent {
 
     const {
       backgroundColor,
-    } = theme
+    } = themes[theme]
 
     if (!display) return null
 

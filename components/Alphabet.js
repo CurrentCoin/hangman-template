@@ -5,10 +5,9 @@ import CircledLetter from './CircledLetter'
 
 export default class Alphabet extends PureComponent {
   static propTypes = {
-    // All the crossed out letters in a string
     crossedOut: PropTypes.string,
     onClick: PropTypes.func,
-    theme: PropTypes.object,
+    theme: PropTypes.string,
   }
 
   static defaultProps = {

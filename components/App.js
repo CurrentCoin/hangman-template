@@ -4,10 +4,10 @@ import Alphabet from './Alphabet'
 import Progress from './Progress'
 import SecretWord from './SecretWord'
 import Prompt from './Prompt'
-import themes from '../themes'
 
 import './App.css'
 
+import themes from '../themes'
 import chooseRandom from '../functions/chooseRandom'
 
 export default class App extends Component {
@@ -91,9 +91,17 @@ export default class App extends Component {
       numberOfWrongGuesses,
       partialWordArray,
       restart,
+      state: {
+        guesses
+      },
+      props: {
+        theme
+      }
     } = this
 
-    const { guesses } = this.state
+    const {
+      backgroundColor,
+    } = themes[theme]
 
     let lost = false
     let won = false
@@ -110,13 +118,11 @@ export default class App extends Component {
         ? 'You ran out of guesses'
         : null
 
-    const theme = themes[this.props.theme]
-
     return (
       <div
         className='Hangman-wrapper'
         style={{
-          backgroundColor: theme.backgroundColor
+          backgroundColor: backgroundColor
         }}
       >
         <Progress

@@ -11,11 +11,11 @@ import themes from '../themes'
 export default class Letter extends PureComponent {
   static propTypes = {
     letter: PropTypes.string.isRequired,
-    theme: PropTypes.object,
+    theme: PropTypes.string,
   }
 
   static defaultProps = {
-    theme: themes['a'],
+    theme: 'a',
   }
 
   componentDidMount() {
@@ -36,11 +36,10 @@ export default class Letter extends PureComponent {
   drawLetter() {
     const {
       letter,
-      theme: {
-        fontColor,
-      },
+      theme,
     } = this.props
 
+    const { fontColor } = themes[theme]
 
     if (letter === ' ') {
       this.svg.setAttribute('height', '1em')

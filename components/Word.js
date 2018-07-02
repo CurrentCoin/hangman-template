@@ -6,7 +6,7 @@ import Letter from './Letter'
 export default class Word extends PureComponent {
   static propTypes = {
     text: PropTypes.string,
-    theme: PropTypes.object,
+    theme: PropTypes.string,
   }
 
   static defaultProps = {

@@ -11,7 +11,7 @@ export default class Circle extends PureComponent {
   }
 
   static defaultProps = {
-    theme: themes['a'],
+    theme: 'a',
   }
 
   componentDidMount() {
@@ -25,11 +25,11 @@ export default class Circle extends PureComponent {
   }
 
   drawCircle() {
-    const { theme: {
+    const {
       circleOutlineColor,
       circleFill,
       circleFillColor,
-    }} = this.props
+    } = themes[this.props.theme]
 
     const style = {
       stroke: circleOutlineColor,

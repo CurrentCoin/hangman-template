@@ -7,11 +7,11 @@ import themes from '../themes'
 
 export default class Underline extends PureComponent {
   static propTypes = {
-    theme: PropTypes.object,
+    theme: PropTypes.string,
   }
 
   static defaultProps = {
-    theme: themes['a'],
+    theme: 'a',
   }
 
   componentDidMount() {
@@ -26,10 +26,8 @@ export default class Underline extends PureComponent {
 
   drawUnderline() {
     const {
-      theme: {
-        lineColor,
-      }
-    } = this.props
+      lineColor,
+    } = themes[this.props.theme]
 
     const max = 50
 

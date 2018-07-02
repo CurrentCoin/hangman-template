@@ -7,7 +7,7 @@ import Underline from './Underline'
 export default class SecretWord extends Component {
   static propTypes = {
     letters: PropTypes.array.isRequired,
-    theme: PropTypes.object,
+    theme: PropTypes.string,
   }
 
   render() {

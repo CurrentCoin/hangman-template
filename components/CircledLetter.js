@@ -21,6 +21,7 @@ export default class CircledLetter extends PureComponent {
     letter: PropTypes.string.isRequired,
     onClick: PropTypes.func,
     crossedOut: PropTypes.bool,
+    theme: PropTypes.string,
   }
 
   componentDidMount() {

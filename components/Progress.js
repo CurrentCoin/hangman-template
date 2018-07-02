@@ -10,12 +10,12 @@ import themes from '../themes'
 export default class Progress extends Component {
   static propTypes = {
     stage: PropTypes.number,
-    theme: PropTypes.object,
+    theme: PropTypes.string,
   }
 
   static defaultProps = {
     stage: 0,
-    theme: themes['a'],
+    theme: 'a',
   }
 
   componentDidMount() {
@@ -37,11 +37,9 @@ export default class Progress extends Component {
 
   renderSvg() {
     const {
-      theme: {
-        progressColor,
-        lineColor,
-      }
-    } = this.props
+      progressColor,
+      lineColor,
+    } = themes[this.props.theme]
 
     this.style = {
       stroke: progressColor || lineColor,

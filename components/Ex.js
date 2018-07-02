@@ -7,11 +7,11 @@ import themes from '../themes'
 
 export default class Ex extends PureComponent {
   static propTypes = {
-    theme: PropTypes.object,
+    theme: PropTypes.string,
   }
 
   static defaultProps = {
-    theme: themes['a'],
+    theme: 'a',
   }
 
   componentDidMount() {
@@ -27,7 +27,7 @@ export default class Ex extends PureComponent {
   drawEx() {
     const max = 40
 
-    const { theme: { exColor } } = this.props
+    const { exColor } = themes[this.props.theme]
 
     const style = {
       stroke: exColor,
