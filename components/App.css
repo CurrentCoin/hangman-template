@@ -1,0 +1,29 @@
+.Hangman-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  font-size: 2em;
+}
+
+.Hangman-Progress {
+  width: 200px;
+  height: 200px;
+}
+
+.Hangman-SecretWord {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.Hangman-SecretWord-letter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0.1em;
+}

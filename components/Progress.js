@@ -1,22 +1,28 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import rough from 'roughjs'
 
-const clearNode = node => {
-  while(node.firstChild) {
-    node.removeChild(node.firstChild)
-  }
-}
+import clearNode from '../functions/clearNode'
 
+// FIXME: move memory of previous stage into state
 export default class Progress extends Component {
+  static propTypes = {
+    stage: PropTypes.number,
+  }
+
+  static defaultProps = {
+    stage: 0,
+  }
+
   componentDidMount() {
     this.rc = rough.svg(this.svg)
 
-    this.padding = 15
-
     const style = getComputedStyle(this.svg)
 
-    this.height = Number(style.height.slice(0, -2))
+    // this.height = Number(style.height.slice(0, -2))
     this.width = Number(style.width.slice(0, -2))
+    this.height = this.width
+    this.padding = this.width / 10
 
     this.renderSvg()
   }
@@ -26,7 +32,7 @@ export default class Progress extends Component {
   }
 
   renderSvg() {
-    const currentStage = this.props.incorrectGuesses
+    const currentStage = this.props.stage
     let previousStage = this.previousStage
 
     if (currentStage === previousStage) {
@@ -185,7 +191,7 @@ export default class Progress extends Component {
   render() {
     return (
       <svg
-        className='Hangman-Progress-svg'
+        className='Hangman-Progress'
         ref={ref => this.svg = ref}
       >
       </svg>

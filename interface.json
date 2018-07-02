@@ -8,7 +8,7 @@
     "values": ["a", "b"],
     "default": "a"
   },
-  "numberOfIncorrectGuessesAllowed": {
+  "wrongGuesses": {
     "type": "enum",
     "values": ["6", "8"],
     "default": "6"

@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "prop-types": "^15.6.2",
     "react-template-preview": "^1.0.31",
     "roughjs": "^2.2.1"
   }
