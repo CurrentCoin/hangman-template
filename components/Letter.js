@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import rough from 'roughjs'
+import rough from 'roughjs-es5'
 
 import letterPaths from '../fonts/MavenProBoldUpperPaths'
 import clearNode from '../functions/clearNode'

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import rough from 'roughjs'
+import rough from 'roughjs-es5'
 
 import clearNode from '../functions/clearNode'
 

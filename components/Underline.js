@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import rough from 'roughjs'
+import rough from 'roughjs-es5'
 
 import fitViewBox from '../functions/fitViewBox'
 

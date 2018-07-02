@@ -13,11 +13,24 @@ export default class SecretWord extends Component {
     const { letters } = this.props
 
     return (
-      <div className='Hangman-SecretWord'>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
         {
           letters.map((letter, index) => (
             <div
-              className='Hangman-SecretWord-letter'
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+                padding: '0.1em',
+              }}
               key={index}
             >
               <Letter

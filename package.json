@@ -12,7 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "prop-types": "^15.6.2",
-    "react-template-preview": "^1.0.31",
-    "roughjs": "^2.2.1"
+    "react-template-preview": "^1.0.34",
+    "roughjs-es5": "^0.1.0"
   }
 }
