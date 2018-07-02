@@ -1,9 +1,19 @@
 import React, { PureComponent } from 'react'
+import PropTypes from 'prop-types'
 import rough from 'roughjs-es5'
 
 import fitViewBox from '../functions/fitViewBox'
+import themes from '../themes'
 
 export default class Circle extends PureComponent {
+  static propTypes = {
+    theme: PropTypes.object,
+  }
+
+  static defaultProps = {
+    theme: themes['a'],
+  }
+
   componentDidMount() {
     this.rc = rough.svg(this.svg)
 
@@ -15,13 +25,25 @@ export default class Circle extends PureComponent {
   }
 
   drawCircle() {
-    const circleNode = this.rc.circle(0, 0, 50, {
-      stroke: 'rgba(255, 255, 255, 0)',
-      fill: 'rgba(0, 0, 255, 0.5)',
-      roughness: 3,
-      // strokeWidth: 1,
-      fillStyle: 'cross-hatch',
-    })
+    const { theme: {
+      circleOutlineColor,
+      circleFill,
+      circleFillColor,
+    }} = this.props
+
+    const style = {
+      stroke: circleOutlineColor,
+    }
+
+    if (circleFill) {
+      Object.assign(style, {
+        fill: circleFillColor,
+        roughness: 3,
+        fillStyle: 'cross-hatch',
+      })
+    }
+
+    const circleNode = this.rc.circle(0, 0, 50, style)
 
     this.svg.appendChild(circleNode)
 

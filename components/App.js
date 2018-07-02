@@ -113,8 +113,16 @@ export default class App extends Component {
     const theme = themes[this.props.theme]
 
     return (
-      <div className='Hangman-wrapper'>
-        <Progress stage={numberOfWrongGuesses} />
+      <div
+        className='Hangman-wrapper'
+        style={{
+          backgroundColor: theme.backgroundColor
+        }}
+      >
+        <Progress
+          stage={numberOfWrongGuesses}
+          theme={theme}
+        />
         <SecretWord
           letters={partialWordArray}
           theme={theme}
@@ -122,12 +130,14 @@ export default class App extends Component {
         <Alphabet
           crossedOut={guesses}
           onClick={guess}
+          theme={theme}
         />
         <Prompt
           display={won || lost}
           text={propmtText}
           buttonText='play again'
           onClick={restart}
+          theme={theme}
         />
       </div>
     )

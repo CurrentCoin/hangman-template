@@ -4,14 +4,18 @@ import rough from 'roughjs-es5'
 
 import clearNode from '../functions/clearNode'
 
+import themes from '../themes'
+
 // FIXME: move memory of previous stage into state
 export default class Progress extends Component {
   static propTypes = {
     stage: PropTypes.number,
+    theme: PropTypes.object,
   }
 
   static defaultProps = {
     stage: 0,
+    theme: themes['a'],
   }
 
   componentDidMount() {
@@ -32,6 +36,17 @@ export default class Progress extends Component {
   }
 
   renderSvg() {
+    const {
+      theme: {
+        progressColor,
+        lineColor,
+      }
+    } = this.props
+
+    this.style = {
+      stroke: progressColor || lineColor,
+    }
+
     const currentStage = this.props.stage
     let previousStage = this.previousStage
 
@@ -78,7 +93,7 @@ export default class Progress extends Component {
   }
 
   drawBase() {
-    const { rc, svg } = this
+    const { rc, svg, style } = this
     const width = this.width - (this.padding * 2)
     const height = this.height - (this.padding * 2)
     const x0 = this.padding
@@ -86,10 +101,10 @@ export default class Progress extends Component {
 
     const centerX = x0 + (width / 2)
 
-    const bottomLine = rc.line(x0, y0 + height, x0 + width, y0 + height)
-    const centerLine = rc.line(centerX, y0, centerX, y0 + height)
-    const topLine = rc.line(x0, y0, centerX, y0)
-    const leftLine = rc.line(x0, y0, x0, y0 + (height / 4))
+    const bottomLine = rc.line(x0, y0 + height, x0 + width, y0 + height, style)
+    const centerLine = rc.line(centerX, y0, centerX, y0 + height, style)
+    const topLine = rc.line(x0, y0, centerX, y0, style)
+    const leftLine = rc.line(x0, y0, x0, y0 + (height / 4), style)
 
     svg.appendChild(bottomLine)
     svg.appendChild(centerLine)
@@ -98,25 +113,25 @@ export default class Progress extends Component {
   }
 
   drawHead() {
-    const { rc, svg } = this
+    const { rc, svg, style } = this
     const height = this.height - (this.padding * 2)
     const radius = height / 16
     const x0 = this.padding
     const y0 = this.padding
 
-    const circle = rc.circle(x0, y0 + (height / 4) + radius, radius * 2)
+    const circle = rc.circle(x0, y0 + (height / 4) + radius, radius * 2, style)
 
     svg.appendChild(circle)
   }
 
   drawTorso() {
-    const { rc, svg } = this
+    const { rc, svg, style } = this
     const height = this.height - (this.padding * 2)
     const x0 = this.padding
     const y0 = this.padding + (height * 3 / 8)
     const torsoLength = height / 4
 
-    const line = rc.line(x0, y0, x0, y0 + torsoLength)
+    const line = rc.line(x0, y0, x0, y0 + torsoLength, style)
 
     svg.appendChild(line)
   }
@@ -130,7 +145,7 @@ export default class Progress extends Component {
   }
 
   drawArm(side) {
-    const { rc, svg } = this
+    const { rc, svg, style } = this
     const width = this.width - (this.padding * 2)
     const height = this.height - (this.padding * 2)
     const x0 = this.padding
@@ -138,7 +153,7 @@ export default class Progress extends Component {
     const armLength = width / 8
     const armEndX = side === 'left' ? x0 - armLength : x0 + armLength
 
-    const arm = rc.line(x0, y0, armEndX, y0)
+    const arm = rc.line(x0, y0, armEndX, y0, style)
 
     svg.appendChild(arm)
   }
@@ -152,7 +167,7 @@ export default class Progress extends Component {
   }
 
   drawLeg(side) {
-    const { rc, svg } = this
+    const { rc, svg, style } = this
     const width = this.width - (this.padding * 2)
     const height = this.height - (this.padding * 2)
     const x0 = this.padding
@@ -161,7 +176,7 @@ export default class Progress extends Component {
     const legEndX = side === 'left' ? x0 - armLength : x0 + armLength
     const legEndY = y0 + armLength
 
-    const leg = rc.line(x0, y0, legEndX, legEndY)
+    const leg = rc.line(x0, y0, legEndX, legEndY, style)
 
     svg.appendChild(leg)
   }
@@ -175,7 +190,7 @@ export default class Progress extends Component {
   }
 
   drawEye(side) {
-    const { rc, svg } = this
+    const { rc, svg, style } = this
     const height = this.height - (this.padding * 2)
     const y0 = this.padding + (height * 5 / 16)
     const x0 = side === 'left'
@@ -183,7 +198,7 @@ export default class Progress extends Component {
       : this.padding + (height / 32)
     const diameter = height / 128
 
-    const circle = rc.circle(x0, y0, diameter)
+    const circle = rc.circle(x0, y0, diameter, style)
 
     svg.appendChild(circle)
   }

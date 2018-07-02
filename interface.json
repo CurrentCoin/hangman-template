@@ -5,17 +5,12 @@
   },
   "theme": {
     "type": "enum",
-    "values": ["a", "b"],
-    "default": "a"
+    "values": ["a", "b", "c", "d"],
+    "default": "d"
   },
   "wrongGuesses": {
     "type": "enum",
     "values": ["6", "8"],
     "default": "6"
-  },
-  "alphabet": {
-    "type": "enum",
-    "values": ["upper", "lower"],
-    "default": "upper"
   }
 }

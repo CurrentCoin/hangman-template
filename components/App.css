@@ -12,4 +12,13 @@
 .Hangman-Progress {
   width: 200px;
   height: 200px;
+  padding: 0.5em;
+}
+
+.Hangman-Alphabet {
+  padding: 0.5em;
+}
+
+.Hangman-SecretWord {
+  padding: 0.5em;
 }

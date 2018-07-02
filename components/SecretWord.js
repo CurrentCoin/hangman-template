@@ -21,6 +21,7 @@ export default class SecretWord extends Component {
           alignItems: 'center',
           justifyContent: 'center',
         }}
+        className='Hangman-SecretWord'
       >
         {
           letters.map((letter, index) => (
@@ -38,7 +39,9 @@ export default class SecretWord extends Component {
                 letter={letter || ' '}
                 theme={theme}
               />
-              <Underline />
+              <Underline
+                theme={theme}
+              />
             </div>
           ))
         }

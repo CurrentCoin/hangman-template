@@ -8,6 +8,7 @@ export default class Alphabet extends PureComponent {
     // All the crossed out letters in a string
     crossedOut: PropTypes.string,
     onClick: PropTypes.func,
+    theme: PropTypes.object,
   }
 
   static defaultProps = {
@@ -17,7 +18,10 @@ export default class Alphabet extends PureComponent {
 
   render() {
     const alphabetRange = Array(26).fill().map((_, index) => index + 65)
-    const { onClick } = this.props
+    const {
+      onClick,
+      theme,
+    } = this.props
     const crossedOut = this.props.crossedOut.toUpperCase()
 
     return (
@@ -29,6 +33,7 @@ export default class Alphabet extends PureComponent {
           alignItems: 'center',
           flexWrap: 'wrap',
         }}
+        className='Hangman-Alphabet'
       >
         {
           alphabetRange.map(number => {
@@ -40,6 +45,7 @@ export default class Alphabet extends PureComponent {
                 key={letter}
                 crossedOut={crossedOut.includes(letter)}
                 onClick={() => onClick(letter)}
+                theme={theme}
               />
             )
           })

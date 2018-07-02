@@ -1,9 +1,19 @@
 import React, { PureComponent } from 'react'
+import PropTypes from 'prop-types'
 import rough from 'roughjs-es5'
 
 import fitViewBox from '../functions/fitViewBox'
+import themes from '../themes'
 
 export default class Ex extends PureComponent {
+  static propTypes = {
+    theme: PropTypes.object,
+  }
+
+  static defaultProps = {
+    theme: themes['a'],
+  }
+
   componentDidMount() {
     this.rc = rough.svg(this.svg)
 
@@ -17,14 +27,16 @@ export default class Ex extends PureComponent {
   drawEx() {
     const max = 40
 
-    const options = {
+    const { theme: { exColor } } = this.props
+
+    const style = {
+      stroke: exColor,
       strokeWidth: 5,
-      stroke: 'red',
       roughness: 5,
     }
 
-    const lineNode1 = this.rc.line(0, 0, max, max, options)
-    const lineNode2 = this.rc.line(0, max, max, 0, options)
+    const lineNode1 = this.rc.line(0, 0, max, max, style)
+    const lineNode2 = this.rc.line(0, max, max, 0, style)
 
     this.svg.appendChild(lineNode1)
     this.svg.appendChild(lineNode2)

@@ -1,8 +1,42 @@
 {
   "a": {
-    "fontColor": "red"
+    "fontColor": "black",
+    "circleOutlineColor": "black",
+    "circleFill": false,
+    "circleFillColor": "black",
+    "exColor": "black",
+    "backgroundColor": "white",
+    "progressColor": "black",
+    "lineColor": "black"
   },
   "b": {
-    "fontColor": "blue"
+    "fontColor": "rgba(0, 0, 255, 0.8)",
+    "circleOutlineColor": "rgba(0, 0, 255, 0.8)",
+    "circleFill": false,
+    "circleFillColor": "rgba(0, 0, 255, 0.8)",
+    "exColor": "black",
+    "backgroundColor": "white",
+    "progressColor": "rgba(0, 0, 255, 0.8)",
+    "lineColor": "rgba(0, 0, 255, 0.8)"
+  },
+  "c": {
+    "fontColor": "yellow",
+    "circleOutlineColor": "yellow",
+    "circleFill": false,
+    "circleFillColor": "yellow",
+    "exColor": "blue",
+    "backgroundColor": "black",
+    "progressColor": "yellow",
+    "lineColor": "yellow"
+  },
+  "d": {
+    "fontColor": "black",
+    "circleOutlineColor": "rgba(255, 255, 255, 0)",
+    "circleFill": true,
+    "circleFillColor": "rgba(0, 0, 0, 0.5)",
+    "exColor": "red",
+    "backgroundColor": "rgb(245, 245, 245)",
+    "progressColor": "black",
+    "lineColor": "black"
   }
 }

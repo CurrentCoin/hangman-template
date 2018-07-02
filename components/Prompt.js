@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 
 import Words from './Words'
 import Button from './Button'
+import themes from '../themes'
 
 export default class Prompt extends PureComponent {
   static propTypes = {
@@ -10,14 +11,15 @@ export default class Prompt extends PureComponent {
     text: PropTypes.string,
     buttonText: PropTypes.string,
     onClick: PropTypes.func,
+    theme: PropTypes.object,
   }
 
   static defaultProps = {
     display: true,
     text: '',
     buttonText: 'click',
+    theme: themes['a'],
   }
-
 
   render() {
     const {
@@ -25,7 +27,12 @@ export default class Prompt extends PureComponent {
       text,
       buttonText,
       onClick,
+      theme,
     } = this.props
+
+    const {
+      backgroundColor,
+    } = theme
 
     if (!display) return null
 
@@ -50,14 +57,18 @@ export default class Prompt extends PureComponent {
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
-            backgroundColor: 'white',
+            backgroundColor: backgroundColor,
             padding: '0.5em',
           }}
         >
-          <Words text={text} />
+          <Words
+            text={text}
+            theme={theme}
+          />
           <Button
             text={buttonText}
             onClick={onClick}
+            theme={theme}
           />
         </div>
       </div>

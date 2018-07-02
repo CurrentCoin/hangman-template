@@ -6,6 +6,7 @@ import Letter from './Letter'
 export default class Word extends PureComponent {
   static propTypes = {
     text: PropTypes.string,
+    theme: PropTypes.object,
   }
 
   static defaultProps = {
@@ -15,6 +16,7 @@ export default class Word extends PureComponent {
   render() {
     const {
       text,
+      theme,
     } = this.props
 
     return (
@@ -26,7 +28,11 @@ export default class Word extends PureComponent {
       }}>
         {
           Array.from(text).map((letter, index) => {
-            return <Letter letter={letter} key={index} />
+            return <Letter
+              letter={letter}
+              key={index}
+              theme={theme}
+            />
           })
         }
       </div>

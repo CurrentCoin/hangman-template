@@ -3,14 +3,24 @@ import PropTypes from 'prop-types'
 import rough from 'roughjs-es5'
 
 import fitViewBox from '../functions/fitViewBox'
+import themes from '../themes'
 
 export default class Rectangle extends PureComponent {
   static propTypes = {
     children: PropTypes.element,
+    theme: PropTypes.object,
   }
 
   static defaultProps = {
-    children: <div style={{ height: '1em', width: '5em', }}></div>
+    children: (
+      <div
+        style={{
+          height: '1em',
+          width: '5em',
+        }}
+      ></div>
+    ),
+    theme: themes['a'],
   }
 
   componentDidMount() {
@@ -29,7 +39,15 @@ export default class Rectangle extends PureComponent {
       clientHeight: height,
     } = this.childWrapper
 
-    const rectangleNode = this.rc.rectangle(0, 0, width, height)
+    const {
+      theme: {
+        lineColor
+      }
+    } = this.props
+
+    const rectangleNode = this.rc.rectangle(0, 0, width, height, {
+      stroke: lineColor,
+    })
 
     this.svg.appendChild(rectangleNode)
 

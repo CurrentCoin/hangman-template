@@ -38,6 +38,7 @@ export default class CircledLetter extends PureComponent {
       onClick,
       letter,
       crossedOut,
+      theme,
     } = this.props
 
     return (
@@ -50,15 +51,21 @@ export default class CircledLetter extends PureComponent {
       >
         <Circle
           ref={ref => this.circle = ref}
+          theme={theme}
         />
         <div style={wrapperStyle}>
-          <Letter letter={letter} />
+          <Letter
+            letter={letter}
+            theme={theme}
+          />
         </div>
         {
           crossedOut
             ? (
               <div style={wrapperStyle}>
-                <Ex />
+                <Ex
+                  theme={theme}
+                />
               </div>
             )
             : null

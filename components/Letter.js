@@ -54,6 +54,7 @@ export default class Letter extends PureComponent {
       simplification: 3,
       fillStyle: 'solid',
       fill: fontColor,
+      stroke: fontColor,
     })
 
     this.svg.appendChild(letterNode)

@@ -8,6 +8,7 @@ export default class Button extends PureComponent {
   static propTypes = {
     text: PropTypes.string,
     onClick: PropTypes.func,
+    theme: PropTypes.object,
   }
 
   static defaultProps = {
@@ -18,6 +19,7 @@ export default class Button extends PureComponent {
     const {
       onClick,
       text,
+      theme,
     } = this.props
 
     return (
@@ -27,8 +29,13 @@ export default class Button extends PureComponent {
           fontSize: '0.5em',
         }}
       >
-        <Rectangle>
-          <Words text={text} />
+        <Rectangle
+          theme={theme}
+        >
+          <Words
+            text={text}
+            theme={theme}
+          />
         </Rectangle>
       </div>
     )

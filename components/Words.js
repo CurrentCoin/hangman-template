@@ -6,6 +6,7 @@ import Word from './Word'
 export default class Words extends PureComponent {
   static propTypes = {
     text: PropTypes.string,
+    theme: PropTypes.object,
   }
 
   static defaultProps = {
@@ -15,6 +16,7 @@ export default class Words extends PureComponent {
   render() {
     const {
       text,
+      theme,
     } = this.props
 
     const words = text.split(' ').map(word => word.concat(' '))
@@ -37,7 +39,13 @@ export default class Words extends PureComponent {
       >
         {
           words.map((word, index) => {
-            return <Word text={word} key={index} />
+            return (
+              <Word
+                text={word}
+                key={index}
+                theme={theme}
+              />
+            )
           })
         }
       </div>
