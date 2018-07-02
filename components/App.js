@@ -4,6 +4,7 @@ import Alphabet from './Alphabet'
 import Progress from './Progress'
 import SecretWord from './SecretWord'
 import Prompt from './Prompt'
+import themes from '../themes'
 
 import './App.css'
 
@@ -109,10 +110,15 @@ export default class App extends Component {
         ? 'You ran out of guesses'
         : null
 
+    const theme = themes[this.props.theme]
+
     return (
       <div className='Hangman-wrapper'>
         <Progress stage={numberOfWrongGuesses} />
-        <SecretWord letters={partialWordArray} />
+        <SecretWord
+          letters={partialWordArray}
+          theme={theme}
+        />
         <Alphabet
           crossedOut={guesses}
           onClick={guess}

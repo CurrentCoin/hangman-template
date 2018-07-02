@@ -6,9 +6,16 @@ import letterPaths from '../fonts/MavenProBoldUpperPaths'
 import clearNode from '../functions/clearNode'
 import fitViewBox from '../functions/fitViewBox'
 
+import themes from '../themes'
+
 export default class Letter extends PureComponent {
   static propTypes = {
-    letter: PropTypes.string.isRequired
+    letter: PropTypes.string.isRequired,
+    theme: PropTypes.object,
+  }
+
+  static defaultProps = {
+    theme: themes['a'],
   }
 
   componentDidMount() {
@@ -27,7 +34,13 @@ export default class Letter extends PureComponent {
   }
 
   drawLetter() {
-    const { letter } = this.props
+    const {
+      letter,
+      theme: {
+        fontColor,
+      },
+    } = this.props
+
 
     if (letter === ' ') {
       this.svg.setAttribute('height', '1em')
@@ -40,7 +53,7 @@ export default class Letter extends PureComponent {
     const letterNode = this.rc.path(path, {
       simplification: 3,
       fillStyle: 'solid',
-      fill: 'black',
+      fill: fontColor,
     })
 
     this.svg.appendChild(letterNode)

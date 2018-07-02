@@ -6,11 +6,12 @@ import Underline from './Underline'
 
 export default class SecretWord extends Component {
   static propTypes = {
-    letters: PropTypes.array.isRequired
+    letters: PropTypes.array.isRequired,
+    theme: PropTypes.object,
   }
 
   render() {
-    const { letters } = this.props
+    const { letters, theme } = this.props
 
     return (
       <div
@@ -35,6 +36,7 @@ export default class SecretWord extends Component {
             >
               <Letter
                 letter={letter || ' '}
+                theme={theme}
               />
               <Underline />
             </div>
