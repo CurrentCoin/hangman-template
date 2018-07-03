@@ -4,6 +4,7 @@ import rough from 'roughjs-es5'
 
 import fitViewBox from '../functions/fitViewBox'
 import themes from '../themes'
+import clearNode from '../functions/clearNode'
 
 export default class Ex extends PureComponent {
   static propTypes = {
@@ -17,6 +18,11 @@ export default class Ex extends PureComponent {
   componentDidMount() {
     this.rc = rough.svg(this.svg)
 
+    this.renderSvg()
+  }
+
+  componentDidUpdate() {
+    clearNode(this.svg)
     this.renderSvg()
   }
 

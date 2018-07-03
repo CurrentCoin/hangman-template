@@ -1,13 +1,10 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import rough from 'roughjs-es5'
 
-import clearNode from '../functions/clearNode'
-
 import themes from '../themes'
 
-// FIXME: move memory of previous stage into state
-export default class Progress extends Component {
+export default class Progress extends PureComponent {
   static propTypes = {
     stage: PropTypes.number,
     theme: PropTypes.string,
@@ -18,12 +15,38 @@ export default class Progress extends Component {
     theme: 'a',
   }
 
+  state = {}
+
+  static getDerivedStateFromProps(props, state) {
+    const {
+      stage,
+      theme,
+    } = props
+
+    const {
+      stage: previousStage,
+      theme: previousTheme,
+    } = state
+
+    const alreadyDrawnStage =
+      theme !== previousTheme || previousStage === undefined
+        ? -1
+        : stage < previousStage
+          ? 0
+          : previousStage
+
+    return {
+      stage,
+      theme,
+      alreadyDrawnStage,
+    }
+  }
+
   componentDidMount() {
     this.rc = rough.svg(this.svg)
 
     const style = getComputedStyle(this.svg)
 
-    // this.height = Number(style.height.slice(0, -2))
     this.width = Number(style.width.slice(0, -2))
     this.height = this.width
     this.padding = this.width / 10
@@ -33,6 +56,19 @@ export default class Progress extends Component {
 
   componentDidUpdate() {
     this.renderSvg()
+  }
+
+  clearProgress = () => {
+    const {
+      svg,
+      state: {
+        alreadyDrawnStage,
+      },
+    } = this
+
+    while(svg.lastChild && Number(svg.lastChild.id) !== alreadyDrawnStage) {
+      svg.removeChild(svg.lastChild)
+    }
   }
 
   renderSvg() {
@@ -45,52 +81,28 @@ export default class Progress extends Component {
       stroke: progressColor || lineColor,
     }
 
-    const currentStage = this.props.stage
-    let previousStage = this.previousStage
+    const {
+      props: {
+        stage,
+      },
+      state: {
+        alreadyDrawnStage,
+      },
+      drawStage,
+      clearProgress,
+    } = this
 
-    if (currentStage === previousStage) {
-      return
-    } else if (currentStage < previousStage) {
-      clearNode(this.svg)
-      previousStage = undefined
+    clearProgress(alreadyDrawnStage)
+
+    let stageIndex = alreadyDrawnStage + 1
+
+    while (stageIndex <= stage) {
+      drawStage[stageIndex]()
+      stageIndex++
     }
-
-    /* eslint-disable no-fallthrough */
-    switch (previousStage) {
-      case undefined:
-        this.drawBase()
-        if (currentStage === 0) break
-      case 0:
-        this.drawHead()
-        if (currentStage === 1) break
-      case 1:
-        this.drawTorso()
-        if (currentStage === 2) break
-      case 2:
-        this.drawLeftArm()
-        if (currentStage === 3) break
-      case 3:
-        this.drawRightArm()
-        if (currentStage === 4) break
-      case 4:
-        this.drawLeftLeg()
-        if (currentStage === 5) break
-      case 5:
-        this.drawRightLeg()
-        if (currentStage === 6) break
-      case 6:
-        this.drawLeftEye()
-        if (currentStage === 7) break
-      case 7:
-        this.drawRightEye()
-        if (currentStage === 8) break
-      default:
-    }
-
-    this.previousStage = currentStage
   }
 
-  drawBase() {
+  drawBase = stage => {
     const { rc, svg, style } = this
     const width = this.width - (this.padding * 2)
     const height = this.height - (this.padding * 2)
@@ -104,13 +116,18 @@ export default class Progress extends Component {
     const topLine = rc.line(x0, y0, centerX, y0, style)
     const leftLine = rc.line(x0, y0, x0, y0 + (height / 4), style)
 
+    bottomLine.id = stage
+    centerLine.id = stage
+    topLine.id = stage
+    leftLine.id = stage
+
     svg.appendChild(bottomLine)
     svg.appendChild(centerLine)
     svg.appendChild(topLine)
     svg.appendChild(leftLine)
   }
 
-  drawHead() {
+  drawHead = stage => {
     const { rc, svg, style } = this
     const height = this.height - (this.padding * 2)
     const radius = height / 16
@@ -119,10 +136,12 @@ export default class Progress extends Component {
 
     const circle = rc.circle(x0, y0 + (height / 4) + radius, radius * 2, style)
 
+    circle.id = stage
+
     svg.appendChild(circle)
   }
 
-  drawTorso() {
+  drawTorso = stage => {
     const { rc, svg, style } = this
     const height = this.height - (this.padding * 2)
     const x0 = this.padding
@@ -131,18 +150,20 @@ export default class Progress extends Component {
 
     const line = rc.line(x0, y0, x0, y0 + torsoLength, style)
 
+    line.id = stage
+
     svg.appendChild(line)
   }
 
-  drawLeftArm() {
-    this.drawArm('left')
+  drawLeftArm = stage => {
+    this.drawArm('left', stage)
   }
 
-  drawRightArm() {
-    this.drawArm('right')
+  drawRightArm = stage => {
+    this.drawArm('right', stage)
   }
 
-  drawArm(side) {
+  drawArm = (side, stage) => {
     const { rc, svg, style } = this
     const width = this.width - (this.padding * 2)
     const height = this.height - (this.padding * 2)
@@ -153,18 +174,20 @@ export default class Progress extends Component {
 
     const arm = rc.line(x0, y0, armEndX, y0, style)
 
+    arm.id = stage
+
     svg.appendChild(arm)
   }
 
-  drawLeftLeg() {
-    this.drawLeg('left')
+  drawLeftLeg = stage => {
+    this.drawLeg('left', stage)
   }
 
-  drawRightLeg() {
-    this.drawLeg('right')
+  drawRightLeg = stage => {
+    this.drawLeg('right', stage)
   }
 
-  drawLeg(side) {
+  drawLeg = (side, stage) => {
     const { rc, svg, style } = this
     const width = this.width - (this.padding * 2)
     const height = this.height - (this.padding * 2)
@@ -176,18 +199,20 @@ export default class Progress extends Component {
 
     const leg = rc.line(x0, y0, legEndX, legEndY, style)
 
+    leg.id = stage
+
     svg.appendChild(leg)
   }
 
-  drawLeftEye() {
-    this.drawEye('left')
+  drawLeftEye = stage => {
+    this.drawEye('left', stage)
   }
 
-  drawRightEye() {
-    this.drawEye('right')
+  drawRightEye = stage => {
+    this.drawEye('right', stage)
   }
 
-  drawEye(side) {
+  drawEye = (side, stage) => {
     const { rc, svg, style } = this
     const height = this.height - (this.padding * 2)
     const y0 = this.padding + (height * 5 / 16)
@@ -198,7 +223,21 @@ export default class Progress extends Component {
 
     const circle = rc.circle(x0, y0, diameter, style)
 
+    circle.id = stage
+
     svg.appendChild(circle)
+  }
+
+  drawStage = {
+    0: this.drawBase.bind(this, 0),
+    1: this.drawHead.bind(this, 1),
+    2: this.drawTorso.bind(this, 2),
+    3: this.drawLeftArm.bind(this, 3),
+    4: this.drawRightArm.bind(this, 4),
+    5: this.drawLeftLeg.bind(this, 5),
+    6: this.drawRightLeg.bind(this, 6),
+    7: this.drawLeftEye.bind(this, 7),
+    8: this.drawRightEye.bind(this, 8),
   }
 
   render() {

@@ -4,10 +4,11 @@ import rough from 'roughjs-es5'
 
 import fitViewBox from '../functions/fitViewBox'
 import themes from '../themes'
+import clearNode from '../functions/clearNode'
 
 export default class Circle extends PureComponent {
   static propTypes = {
-    theme: PropTypes.object,
+    theme: PropTypes.string,
   }
 
   static defaultProps = {
@@ -17,6 +18,11 @@ export default class Circle extends PureComponent {
   componentDidMount() {
     this.rc = rough.svg(this.svg)
 
+    this.renderSvg()
+  }
+
+  componentDidUpdate() {
+    clearNode(this.svg)
     this.renderSvg()
   }
 
