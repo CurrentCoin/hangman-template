@@ -25,6 +25,14 @@ export default class CircledLetter extends PureComponent {
   }
 
   componentDidMount() {
+    this.fitDivToCircle()
+  }
+
+  componentDidUpdate() {
+    this.fitDivToCircle()
+  }
+
+  fitDivToCircle() {
     const {
       clientWidth: width,
       clientHeight: height,

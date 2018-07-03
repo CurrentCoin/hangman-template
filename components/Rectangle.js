@@ -59,9 +59,6 @@ export default class Rectangle extends PureComponent {
       node: rectangleNode,
       svg: this.svg,
     })
-
-    this.svg.setAttribute('height', `${height}px`)
-    this.svg.setAttribute('width', `${width}px`)
   }
 
   render() {

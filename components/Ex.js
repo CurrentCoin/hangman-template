@@ -51,8 +51,6 @@ export default class Ex extends PureComponent {
       nodes: [lineNode1, lineNode2],
       svg: this.svg,
     })
-
-    this.svg.setAttribute('height', '1em')
   }
 
   render() {

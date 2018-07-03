@@ -48,8 +48,6 @@ export default class Underline extends PureComponent {
       nodes: lineNode,
       svg: this.svg,
     })
-
-    this.svg.setAttribute('width', '1em')
   }
 
   render() {

@@ -57,8 +57,6 @@ export default class Circle extends PureComponent {
       node: circleNode,
       svg: this.svg,
     })
-
-    this.svg.setAttribute('height', '1.5em')
   }
 
   render() {

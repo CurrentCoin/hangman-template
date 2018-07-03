@@ -1,5 +1,5 @@
 {
-  "a": {
+  "d": {
     "fontColor": "black",
     "circleOutlineColor": "black",
     "circleFill": false,
@@ -29,7 +29,7 @@
     "progressColor": "yellow",
     "lineColor": "yellow"
   },
-  "d": {
+  "a": {
     "fontColor": "black",
     "circleOutlineColor": "rgba(255, 255, 255, 0)",
     "circleFill": true,

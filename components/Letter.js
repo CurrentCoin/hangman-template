@@ -62,8 +62,6 @@ export default class Letter extends PureComponent {
       node: letterNode,
       svg: this.svg,
     })
-
-    this.svg.setAttribute('height', '1em')
   }
 
   render() {

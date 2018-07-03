@@ -1,4 +1,10 @@
-export default ({ node: inputNode, nodes: inputNodes, svg }) => {
+export default ({
+  node: inputNode,
+  nodes: inputNodes,
+  svg,
+  height: desiredHeight,
+  width: desiredWidth,
+}) => {
 
   let nodes = inputNode || inputNodes
 
@@ -47,4 +53,6 @@ export default ({ node: inputNode, nodes: inputNodes, svg }) => {
   const height = maxBottom - minTop + (2 * padding)
 
   svg.setAttribute('viewBox', `${left} ${top} ${width} ${height}`)
+  svg.setAttribute('height', height)
+  svg.setAttribute('width', width)
 }
